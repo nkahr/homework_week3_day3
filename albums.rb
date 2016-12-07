@@ -33,4 +33,18 @@ class Album
     SqlRunner.run(sql)
   end
 
+  def delete_album()
+    sql = "DELETE FROM albums_table WHERE id = #{@id};"
+    SqlRunner.run(sql)
+  end
+
+  def find_album_by_album_id(id)
+    sql = "SELECT * FROM albums_table WHERE id = #{id};"
+    return Album.new(SqlRunner.run(sql)[0])
+  end
+
+  def find_albums_by_artist_id(artist_id)
+    sql = "SELECT * FROM albums_table WHERE artist_id = #{artist_id};"
+    return SqlRunner.run(sql).map{|album| Album.new(album)}
+  end
 end
