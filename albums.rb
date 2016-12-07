@@ -23,6 +23,11 @@ class Album
     return SqlRunner.run(sql).map{|album| Album.new(album)}
   end
 
+  def self.delete_all()
+    sql = "DELETE FROM albums_table;" 
+    SqlRunner.run(sql)
+  end
+
   def show_artist()
     sql = "SELECT * FROM artists_table WHERE id = #{@artist_id};"
     return Artist.new(SqlRunner.run(sql)[0])
@@ -38,12 +43,12 @@ class Album
     SqlRunner.run(sql)
   end
 
-  def find_album_by_album_id(id)
+  def Album.find_album_by_album_id(id)
     sql = "SELECT * FROM albums_table WHERE id = #{id};"
     return Album.new(SqlRunner.run(sql)[0])
   end
 
-  def find_albums_by_artist_id(artist_id)
+  def Album.find_albums_by_artist_id(artist_id)
     sql = "SELECT * FROM albums_table WHERE artist_id = #{artist_id};"
     return SqlRunner.run(sql).map{|album| Album.new(album)}
   end
