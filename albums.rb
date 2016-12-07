@@ -1,24 +1,36 @@
 require_relative('database/sql_runner.rb')
+require_relative('artists.rb')
 require('pg')
 
 class Album
 
-  attr_reader :id, :title, :genre
+  attr_accessor :id, :title, :genre, :artist_id
 
   def initialize(album_hash)
     @id = album_hash['id'] unless album_hash['id'].nil?
     @title = album_hash['title']
     @genre = album_hash['genre']
+    @artist_id = album_hash['artist_id']
   end
 
   def save()
-    sql = "INSERT INTO albums_table (title, genre) VALUES ('#{@title}', '#{@genre}') RETURNING *;"
+    sql = "INSERT INTO albums_table (title, genre, artist_id) VALUES ('#{@title}', '#{@genre}', #{@artist_id}) RETURNING *;"
     @id = SqlRunner.run(sql)[0]['id'].to_i()
   end
 
-  def show_all()
+  def self.show_all()
     sql = "SELECT * FROM albums_table;"
+    return SqlRunner.run(sql).map{|album| Album.new(album)}
+  end
+
+  def show_artist()
+    sql = "SELECT * FROM artists_table WHERE id = #{@artist_id};"
+    return Artist.new(SqlRunner.run(sql)[0])
+  end
+
+  def update_album()
+    sql = "UPDATE albums_table SET (title, genre, artist_id) = ('#{@title}', '#{@genre}', #{@artist_id}) WHERE id = #{@id};"
     SqlRunner.run(sql)
   end
-  
+
 end
